@@ -12,7 +12,7 @@ defmodule Robotb.Actions do
   @servo_b_pin 22
   @servo_c_pin 18
 
-  @smotor_pins [in1: 2, in2: 3, in3: 4, in4: 17]
+  @smotor_pins [in1: 2, in2: 3, ena: 17]
 
   @ref_atoms [:cs, :clock, :address, :dataout]
   @lf_sensor_data %{sensor0: 0, sensor1: 0, sensor2: 0, sensor3: 0, sensor4: 0, sensor5: 0}
@@ -125,11 +125,11 @@ defmodule Robotb.Actions do
      
     if cs >@lim_val && state == 0 do
      if side == "right" do
-       Pigpiox.Pwm.gpio_pwm(20, @pwm_value - 10)
+       Pigpiox.Pwm.gpio_pwm(20, @pwm_value - 20)
     Pigpiox.Pwm.gpio_pwm(13, 0)
      else
         Pigpiox.Pwm.gpio_pwm(20, 0)
-    Pigpiox.Pwm.gpio_pwm(13, @pwm_value - 10)
+    Pigpiox.Pwm.gpio_pwm(13, @pwm_value - 20)
      end      
      turn(motor_ref, sensor_ref, side, 0)
     else
@@ -138,11 +138,11 @@ defmodule Robotb.Actions do
      motion_pwm(0)
      else
       if side == "right" do
-         Pigpiox.Pwm.gpio_pwm(20, @pwm_value - 10)
+         Pigpiox.Pwm.gpio_pwm(20, @pwm_value - 20)
     Pigpiox.Pwm.gpio_pwm(13, 0)
       else
         Pigpiox.Pwm.gpio_pwm(20, 0)
-    Pigpiox.Pwm.gpio_pwm(13, @pwm_value - 10)
+    Pigpiox.Pwm.gpio_pwm(13, @pwm_value - 20)
         
       end
       turn(motor_ref, sensor_ref, side, 1)
@@ -276,25 +276,13 @@ defmodule Robotb.Actions do
   end
 
 def sowing(smotor_ref) do
-  IO.puts("smotor connecting")
-  smotor_action(smotor_ref, [1, 0, 0, 1])
-  Process.sleep(5)
-  smotor_action(smotor_ref, [1, 0, 0, 0])
-  Process.sleep(5)
-  smotor_action(smotor_ref, [1, 1, 0, 0])
-  Process.sleep(5)
-  smotor_action(smotor_ref, [0, 1, 0, 0])
-  Process.sleep(5)
-  smotor_action(smotor_ref, [0, 1, 1, 0])
-  Process.sleep(5)
-  smotor_action(smotor_ref, [0, 0, 1, 0])
-  Process.sleep(5)
-  smotor_action(smotor_ref, [0, 0, 1, 1])
-  Process.sleep(5)
-  smotor_action(smotor_ref, [0, 0, 0, 1])
-  Process.sleep(5)
-  sowing(smotor_ref)
-  IO.puts("smotor connected")
+  smotor_action(smotor_ref, [1, 0, 0])
+  Pigpiox.Pwm.gpio_pwm(17, 180)
+  Process.sleep(2000)
+  Pigpiox.Pwm.gpio_pwm(17, 100)
+  Process.sleep(2000)
+  smotor_action(smotor_ref, [0, 0, 0])
+  Pigpiox.Pwm.gpio_pwm(17, 0)
 end
 
 def weeding(dir) do
