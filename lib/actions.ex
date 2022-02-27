@@ -277,12 +277,12 @@ defmodule Robotb.Actions do
 
 def sowing(smotor_ref) do
   smotor_action(smotor_ref, [1, 0, 0])
-  Pigpiox.Pwm.gpio_pwm(17, 180)
-  Process.sleep(2000)
-  Pigpiox.Pwm.gpio_pwm(17, 100)
-  Process.sleep(2000)
+  Pigpiox.Pwm.gpio_pwm(17, 200)
+  Process.sleep(100)
   smotor_action(smotor_ref, [0, 0, 0])
   Pigpiox.Pwm.gpio_pwm(17, 0)
+  Process.sleep(100)
+  sowing(smotor_ref)
 end
 
 def weeding(dir) do
