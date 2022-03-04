@@ -5,7 +5,7 @@ defmodule Robotb.Actions do
   alias Circuits.GPIO
 
   @sensor_pins [cs: 5, clock: 25, address: 24, dataout: 23]
-  @ir_pins [dl: 19]
+  @ir_pins [obs: 19, sw: 16]
   @motor_pins [rb: 12, rf: 13, lf: 20, lb: 21]
   @pwm_pins [enl: 6, enr: 26]
   @servo_a_pin 27
@@ -39,76 +39,41 @@ defmodule Robotb.Actions do
     sensor_ref = Enum.map(@sensor_pins, fn {atom, pin_no} -> configure_sensor({atom, pin_no}) end)
     sensor_ref = Enum.map(sensor_ref, fn{_atom, ref_id} -> ref_id end)
     sensor_ref = Enum.zip(@ref_atoms, sensor_ref)
-    ir_ref = Enum.map(@ir_pins, fn {_atom, pin_no} -> GPIO.open(pin_no, :input, pull_mode: :pullup) end)
-    #move(motor_ref, sensor_ref, 0, 0)   
+    ir_ref = Enum.map(@ir_pins, fn {_atom, pin_no} -> GPIO.open(pin_no, :input, pull_mode: :pullup) end) 
     cond do
-      str == "move" -> move(motor_ref, sensor_ref, 0, 0)
+      str == "move" -> move(sensor_ref, 0, 0)
       str == "right" -> turn(motor_ref, sensor_ref, "right", 0)
       str == "left" -> turn(motor_ref, sensor_ref, "left", 0)
-      str == "sow" -> sowing(smotor_ref)
+      str == "sowl" -> sowing(smotor_ref, 0, "left")
+      str == "sowr" -> sowing(smotor_ref, 0, "right")
       str == "weedr" -> weeding("right")
       str == "weedl" -> weeding("left")
       str == "depositr" -> depo_("right")
       str == "depositl" -> depo_("left")
-      str == "obs" -> get_ir(ir_ref)
+      str == "obs" -> get_ir(ir_ref, "obs") 
       true -> nil
     end
     Enum.map(pwm_ref,fn {_, ref_no} -> GPIO.write(ref_no, 0) end)
   end
   
-  def get_ir(ir_ref) do
+  def get_ir(ir_ref, osw) do
     ir_values = Enum.map(ir_ref,fn {_, ref_no} -> GPIO.read(ref_no) end)
-    if ir_values == [0] do
-     true
+    if osw == "obs" do
+	    if Enum.at(ir_values, 0) == 0 do
+	     true
+	    else
+	     false
+	    end 
     else
-     false
-    end 
+    	    if Enum.at(ir_values, 1) == 0 do
+     	     true
+	    else
+	     false
+	    end
+    end
   end
 
-#   def turn(motor_ref, sensor_ref, side, state) do
-#     append_sensor_list = [0,1,2,3,4] ++ [5]
-#     temp_sensor_list = [5 | append_sensor_list]
-#     l = append_sensor_list
-#         |> Enum.with_index
-#         |> Enum.map(fn {sens_num, sens_idx} ->
-#               analog_read(sens_num, sensor_ref, Enum.fetch(temp_sensor_list, sens_idx))
-#               end)
-#     Enum.each(0..5, fn n -> provide_clock(sensor_ref) end)
-#     GPIO.write(sensor_ref[:cs], 1)
-#     ls = Enum.at(l, 4)
-#     cs = Enum.at(l, 3)
-#     rs = Enum.at(l, 2)
-#     rrs = Enum.at(l, 1)
-#     lls = Enum.at(l, 0)
-    
-#     if state == 0 do
-#      if side == "right" do
-#       motor_action(motor_ref, @sright)
-#       motion_pwm(@pwm_value)
-#      else
-#       motor_action(motor_ref, @sleft)
-#       motion_pwm(@pwm_value)
-#      end      
-#      Process.sleep(300)
-#      turn(motor_ref, sensor_ref, side, 1)
-#     else
-#      if cs>@lim_val do
-#      motor_action(motor_ref, @stop)
-#      else
-#       if side == "right" do
-#         motor_action(motor_ref, @sright)
-#         motion_pwm(@pwm_value)
-#       else
-#         motor_action(motor_ref, @sleft)
-#         motion_pwm(@pwm_value)
-#       end
-#       turn(motor_ref, sensor_ref, side, 1)
-#      end
-#     end
-
-#  end
-
- def turn(motor_ref, sensor_ref, side, state) do
+  def turn(motor_ref, sensor_ref, side, state) do
     append_sensor_list = [0,1,2,3,4] ++ [5]
     temp_sensor_list = [5 | append_sensor_list]
     l = append_sensor_list
@@ -117,39 +82,81 @@ defmodule Robotb.Actions do
               analog_read(sens_num, sensor_ref, Enum.fetch(temp_sensor_list, sens_idx))
               end)
     Enum.each(0..5, fn n -> provide_clock(sensor_ref) end)
+    GPIO.write(sensor_ref[:cs], 1)
     ls = Enum.at(l, 4)
     cs = Enum.at(l, 3)
     rs = Enum.at(l, 2)
     rrs = Enum.at(l, 1)
     lls = Enum.at(l, 0)
-     
-    if cs >@lim_val && state == 0 do
+    
+    if state == 0 do
      if side == "right" do
-       Pigpiox.Pwm.gpio_pwm(20, @pwm_value - 20)
-    Pigpiox.Pwm.gpio_pwm(13, 0)
+      motor_action(motor_ref, @sright)
+      motion_pwm(@pwm_value)
      else
-        Pigpiox.Pwm.gpio_pwm(20, 0)
-    Pigpiox.Pwm.gpio_pwm(13, @pwm_value - 20)
+      motor_action(motor_ref, @sleft)
+      motion_pwm(@pwm_value)
      end      
-     turn(motor_ref, sensor_ref, side, 0)
+     Process.sleep(300)
+     turn(motor_ref, sensor_ref, side, 1)
     else
-     if cs >@lim_val do
+     if cs>@lim_val do
      motor_action(motor_ref, @stop)
-     motion_pwm(0)
      else
       if side == "right" do
-         Pigpiox.Pwm.gpio_pwm(20, @pwm_value - 20)
-    Pigpiox.Pwm.gpio_pwm(13, 0)
+        motor_action(motor_ref, @sright)
+        motion_pwm(@pwm_value)
       else
-        Pigpiox.Pwm.gpio_pwm(20, 0)
-    Pigpiox.Pwm.gpio_pwm(13, @pwm_value - 20)
-        
+        motor_action(motor_ref, @sleft)
+        motion_pwm(@pwm_value)
       end
       turn(motor_ref, sensor_ref, side, 1)
      end
     end
 
  end
+
+#  def turn(motor_ref, sensor_ref, side, state) do
+#     append_sensor_list = [0,1,2,3,4] ++ [5]
+#     temp_sensor_list = [5 | append_sensor_list]
+#     l = append_sensor_list
+#         |> Enum.with_index
+#         |> Enum.map(fn {sens_num, sens_idx} ->
+#               analog_read(sens_num, sensor_ref, Enum.fetch(temp_sensor_list, sens_idx))
+#               end)
+#     Enum.each(0..5, fn n -> provide_clock(sensor_ref) end)
+#     ls = Enum.at(l, 4)
+#     cs = Enum.at(l, 3)
+#     rs = Enum.at(l, 2)
+#     rrs = Enum.at(l, 1)
+#     lls = Enum.at(l, 0)
+    
+#     if state == 0 do
+#      if side == "right" do
+#          Pigpiox.Pwm.gpio_pwm(20, @pwm_value)
+#     Pigpiox.Pwm.gpio_pwm(13, 0)
+#       else
+#         Pigpiox.Pwm.gpio_pwm(20, 0)
+#     Pigpiox.Pwm.gpio_pwm(13, @pwm_value)
+#       end
+#       Process.sleep(250)
+#       turn(motor_ref, sensor_ref, side, 1)
+#     end
+     
+#      if cs >@lim_val do
+#      motor_action(motor_ref, @stop)
+#      motion_pwm(0)
+#      else
+#       if side == "right" do
+#          Pigpiox.Pwm.gpio_pwm(20, @pwm_value)
+#     Pigpiox.Pwm.gpio_pwm(13, 0)
+#       else
+#         Pigpiox.Pwm.gpio_pwm(20, 0)
+#     Pigpiox.Pwm.gpio_pwm(13, @pwm_value)
+#       end
+#       turn(motor_ref, sensor_ref, side, 1)
+#      end
+#  end
 
 #  def move(motor_ref, sensor_ref, state) do
 #     append_sensor_list = [0,1,2,3,4] ++ [5]
@@ -191,7 +198,7 @@ defmodule Robotb.Actions do
 #     end
 #  end
 
- def move(motor_ref, sensor_ref, state, pError) do
+ def move(sensor_ref, state, pError) do
     append_sensor_list = [0,1,2,3,4] ++ [5]
     temp_sensor_list = [5 | append_sensor_list]
     l = append_sensor_list
@@ -207,23 +214,20 @@ defmodule Robotb.Actions do
     lls = Enum.at(l, 0)
     
     if (((lls>@lim_val)&&(ls>@lim_val)&&(cs>@lim_val)) ||  ((rrs>@lim_val)&&(rs>@lim_val)&&(cs>@lim_val))) && state == 0 do
-      #if (ls+cs+rs+rrs+lls)/5 >= 550 && state == 0 do
-      motor_action(motor_ref, @forward)
-      motion_pwm(@pwm_value)
-      move(motor_ref, sensor_ref, 0, pError)
+      Pigpiox.Pwm.gpio_pwm(20, @pwm_value)
+      Pigpiox.Pwm.gpio_pwm(13, @pwm_value)
+      move(sensor_ref, 0, pError)
     else
     cond do
-    #(ls+cs+rs+rrs+lls)/5 >= 550 ->  
     ((lls>@lim_val)&&(ls>@lim_val)&&(cs>@lim_val)) ||  ((rrs>@lim_val)&&(rs>@lim_val)&&(cs>@lim_val)) -> 
-# || ((ls>@lim_val)&&(lls>@lim_val)) || ((rs>@lim_val)&&(rrs>@lim_val)) ->
-    motion_pwm(0) 
-    motor_action(motor_ref, @stop)             
+    Pigpiox.Pwm.gpio_pwm(20, 0)
+    Pigpiox.Pwm.gpio_pwm(13, 0)   
+    motion_pwm(0)
     true ->
        error = getError(lls, ls, cs, rs, rrs)
        {pError, pid} = calculatePID(error, pError)
-       #IO.inspect(pid)
-       motorPIDcontrol(pid, motor_ref)
-       move(motor_ref, sensor_ref, 1, pError)
+       motorPIDcontrol(pid)
+       move(sensor_ref, 1, pError)
     end
     end
  end
@@ -250,7 +254,7 @@ defmodule Robotb.Actions do
     {pError, pidvalue}
  end
 
-  def motorPIDcontrol(pid, motor_ref) do
+  def motorPIDcontrol(pid) do
     leftMotorSpeed = @pwm_value - pid
     rightMotorSpeed = @pwm_value + pid
     Pigpiox.Pwm.gpio_pwm(20, leftMotorSpeed)
@@ -275,18 +279,45 @@ defmodule Robotb.Actions do
     Pigpiox.Pwm.gpio_pwm(@servo_c_pin, val)
   end
 
-def sowing(smotor_ref) do
+def rotate(d) do
+  i = 180 - d
+  test_servo_b(i)
+  Process.sleep(20)
+  if i != 180 do
+    d = d - 1
+    rotate(d)
+  end
+end
+
+def sowing(smotor_ref, i, d) do
+if i<70 && i > 0 do
   smotor_action(smotor_ref, [1, 0, 0])
-  Pigpiox.Pwm.gpio_pwm(17, 200)
-  Process.sleep(100)
+  Pigpiox.Pwm.gpio_pwm(17, 250)
+  Process.sleep(30)
   smotor_action(smotor_ref, [0, 0, 0])
   Pigpiox.Pwm.gpio_pwm(17, 0)
-  Process.sleep(100)
-  sowing(smotor_ref)
+  Process.sleep(80)
+  i = i + 1
+  sowing(smotor_ref, i, d)
+ else
+  if i == 0 do
+    if d == "right" do
+     test_servo_b(0)
+    else
+     test_servo_b(180)
+    end
+    Process.sleep(1000)
+    i = i + 1
+    sowing(smotor_ref, i, d)
+  else
+    test_servo_b(90)
+    Process.sleep(1000)
+  end
+ end
 end
 
 def weeding(dir) do
-  test_servo_a(40)
+  test_servo_a(25)
   Process.sleep(700)
   test_servo_c(20)
   Process.sleep(700)
@@ -300,7 +331,7 @@ def weeding(dir) do
   Process.sleep(700)
   test_servo_c(85)
   Process.sleep(700)
-  test_servo_a(40)
+  test_servo_a(25)
   Process.sleep(700)
   test_servo_b(90)
 end

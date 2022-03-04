@@ -140,21 +140,19 @@ defmodule Robotb do
       robot = if Enum.at(g, 0)["task"] == "sowing" do
        [robot, rl] = adjust(robot, cli_proc_name)
         if rl == "r" do
-          #Actions.main("sowr")
+          RObotb.Actions.main("sowr")
         else
-          #Actions.main("sowl")
+          RObotb.Actions.main("sowl")
         end
-       Process.sleep(4000)
        Robotb.PhoenixSocketClient.send_for_eval(3, cli_proc_name, Enum.at(g, 0)["num"] |> String.to_integer())
        robot
       else
        [robot, rl] = adjust(robot, cli_proc_name)
         if rl == "r" do
-          #Actions.main("weedr")
+          RObotb.Actions.main("weedr")
         else
-          #Actions.main("weedl")
+          RObotb.Actions.main("weedl")
         end
-       Process.sleep(4000)
        Robotb.PhoenixSocketClient.send_for_eval(4, cli_proc_name, Enum.at(g, 0)["num"] |> String.to_integer())
        robot = reach_depo(robot, cli_proc_name,ch2)
        Robotb.PhoenixSocketClient.send_for_eval(5, cli_proc_name, [Enum.at(g, 0)["num"] |> String.to_integer()])
@@ -287,7 +285,6 @@ defmodule Robotb do
 
   def reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)do
     # stop 4,c | 3,e | 3,b | 1,c  start 1,c,east | 3,e,south  stop 4,c | 3,b
-    Process.sleep(1500)
     if robot.x == gx && robot.y == gy do
      Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
       robot
