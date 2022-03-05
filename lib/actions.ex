@@ -112,7 +112,7 @@ defmodule Robotb.Actions do
       motor_action(motor_ref, @left)
       motion_pwm(@pwm_value)
      end      
-     Process.sleep(300)
+     Process.sleep(200)
      turn(motor_ref, sensor_ref, side, 1)
     else
      if cs>@lim_val do
