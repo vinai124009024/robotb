@@ -106,8 +106,6 @@ defmodule Robotb do
 
   Process.sleep(1600)
   Robotb.Actions.main("sowr")
-
-  Process.sleep(1600)
   Robotb.Actions.main("move")
 
   Process.sleep(1600)
