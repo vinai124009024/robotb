@@ -52,7 +52,7 @@ defmodule Robotb.Actions do
     sensor_ref = Enum.zip(@ref_atoms, sensor_ref)
     ir_ref = Enum.map(@ir_pins, fn {_atom, pin_no} -> GPIO.open(pin_no, :input, pull_mode: :pullup) end) 
     cond do
-      str == "move" -> move(sensor_ref, 0, 0)
+      str == "move" -> move(motor_ref, sensor_ref, 0)
       str == "right" -> turn(motor_ref, sensor_ref, "right", 0)
       str == "left" -> turn(motor_ref, sensor_ref, "left", 0)
       str == "sowl" -> sowing(smotor_ref, 0, "left")
