@@ -86,26 +86,105 @@ defmodule Robotb do
   Make a call to ToyRobot.PhoenixSocketClient.send_robot_status/2 to get the indication of obstacle presence ahead of the robot.
   """
 
-  def stop(robot, goal_locs, ch, ch2) do
+  def stop do
 
     ###########################
     ## complete this funcion ##
     ###########################
-  current_process = self()
-    pid_client = spawn_link(fn ->
-      robot_tuple = 
-      if length(goal_locs) == 1 do
-        robot = efficient_reach(robot, goal_locs, ch, ch2)
-        {:ok, robot}
-      else
-        reach_all_goals(robot, goal_locs, ch, ch2)
-      end
-      send(current_process, robot_tuple)
-    end)
-    receive do
-      {:ok, robot} ->
-        {:ok, robot}
-    end
+  # current_process = self()
+  #   pid_client = spawn_link(fn ->
+  #     robot_tuple = 
+  #     if length(goal_locs) == 1 do
+  #       robot = efficient_reach(robot, goal_locs, ch, ch2)
+  #       {:ok, robot}
+  #     else
+  #       reach_all_goals(robot, goal_locs, ch, ch2)
+  #     end
+  #     send(current_process, robot_tuple)
+  #   end)
+  #   receive do
+  #     {:ok, robot} ->
+  #       {:ok, robot}
+  #   end
+
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("right")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("sowr")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("weedr")
+
+  Process.sleep(9000)
+
+  Robotb.Actions.main("right")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("left")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("depositr")
+
+  Robotb.Actions.main("left")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("weedl")
+
+  Robotb.Actions.main("left")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("left")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("left")
+
+  Robotb.Actions.main("depositr")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("left")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("move")
+  
+  Robotb.Actions.main("left")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("right")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("right")
+
+  Robotb.Actions.main("move")
+
+  Robotb.Actions.main("sowr")
   end
 
   def efficient_reach(robot, goal_locs, cli_proc_name, ch2) do
@@ -219,9 +298,9 @@ defmodule Robotb do
     if robot.x == 2 do
       robot = reach_goal(robot, robot.x, :f, cli_proc_name, ch2, [:straight])
       robot = left(robot)
-      Robota.Actions.main("left")
-      Robota.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
-      Robota.Actions.main("depositr")
+      Robotb.Actions.main("left")
+      Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
+      Robotb.Actions.main("depositr")
       robot
     else
     if 6 - rx < 6 - ry do
@@ -308,14 +387,14 @@ defmodule Robotb do
     else    
     {:obstacle_presence, obs} = Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
     #hardcoding
-    robot = if (robot.x == 3 && robot.y == :b && robot.facing == :west) || (robot.x == 4 && robot.y == :c && robot.facing == :east) || (robot.x == 2 && robot.y == :b && robot.facing == :east) do
-      Robota.PhoenixSocketClient.send_for_eval(2, cli_proc_name, %{"x": robot.x, "y": robot.y, "face": robot.facing})
+    robot = if (robot.x == 2 && robot.y == :c && robot.facing == :south) || (robot.x == 4 && robot.y == :c && robot.facing == :east) || (robot.x == 2 && robot.y == :b && robot.facing == :east) do
+      Robotb.PhoenixSocketClient.send_for_eval(2, cli_proc_name, %{"x": robot.x, "y": robot.y, "face": robot.facing})
       robot = left(robot)
-      Robota.Actions.main("left")
-      Robota.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
+      Robotb.Actions.main("left")
+      Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
       robot = move(robot)
-      Robota.Actions.main("move")
-      Robota.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
+      Robotb.Actions.main("move")
+      Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
       robot
     else
       robot
