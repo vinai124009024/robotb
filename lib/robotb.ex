@@ -92,83 +92,124 @@ defmodule Robotb do
   #       {:ok, robot}
   #   end
 
-
+  Process.sleep(1000)
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
+  Robotb.Actions.main("move")
+
+  Process.sleep(1000)
   Robotb.Actions.main("right")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("sowr")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("weedr")
 
   Process.sleep(9000)
 
+  Process.sleep(1000)
   Robotb.Actions.main("right")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("left")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("depositr")
 
+  Process.sleep(1000)
   Robotb.Actions.main("left")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("weedl")
 
+  Process.sleep(1000)
   Robotb.Actions.main("left")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("left")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("left")
 
+  Process.sleep(1000)
   Robotb.Actions.main("depositr")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("left")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
   
+  Process.sleep(1000)
   Robotb.Actions.main("left")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("right")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("right")
 
+  Process.sleep(1000)
   Robotb.Actions.main("move")
 
+  Process.sleep(1000)
   Robotb.Actions.main("sowr")
   end
 
@@ -211,18 +252,22 @@ defmodule Robotb do
       robot = if Enum.at(g, 0)["task"] == "sowing" do
        [robot, rl] = adjust(robot, cli_proc_name)
         if rl == "r" do
-          RObotb.Actions.main("sowr")
+          Process.sleep(1000)
+  Robotb.Actions.main("sowr")
         else
-          RObotb.Actions.main("sowl")
+          Process.sleep(1000)
+  Robotb.Actions.main("sowl")
         end
        Robotb.PhoenixSocketClient.send_for_eval(3, cli_proc_name, Enum.at(g, 0)["num"] |> String.to_integer())
        robot
       else
        [robot, rl] = adjust(robot, cli_proc_name)
         if rl == "r" do
-          RObotb.Actions.main("weedr")
+          Process.sleep(1000)
+  Robotb.Actions.main("weedr")
         else
-          RObotb.Actions.main("weedl")
+          Process.sleep(1000)
+  Robotb.Actions.main("weedl")
         end
        Robotb.PhoenixSocketClient.send_for_eval(4, cli_proc_name, Enum.at(g, 0)["num"] |> String.to_integer())
        robot = reach_depo(robot, cli_proc_name,ch2)
@@ -239,15 +284,18 @@ defmodule Robotb do
                             {:obstacle_presence, obs} = Robotb.PhoenixSocketClient.send_robot_status(ch, robot)
                             if obs == true do                             
                               robot = right(robot)
-                              Robotb.Actions.main("right")
+                              Process.sleep(1000)
+  Robotb.Actions.main("right")
                               Robotb.PhoenixSocketClient.send_robot_status(ch, robot)
                               robot = move(robot)
-                              Robotb.Actions.main("move")
+                              Process.sleep(1000)
+  Robotb.Actions.main("move")
                               Robotb.PhoenixSocketClient.send_robot_status(ch, robot)
                               [robot, "l"]
                             else
                               robot = move(robot)
-                              Robotb.Actions.main("move")
+                              Process.sleep(1000)
+  Robotb.Actions.main("move")
                               Robotb.PhoenixSocketClient.send_robot_status(ch, robot)
                               [robot, "r"]
                             end
@@ -257,15 +305,18 @@ defmodule Robotb do
       robot.facing == :east -> {:obstacle_presence, obs} = Robotb.PhoenixSocketClient.send_robot_status(ch, robot)
                             if obs == true do                             
                               robot = left(robot)
-                              Robotb.Actions.main("left")
+                              Process.sleep(1000)
+  Robotb.Actions.main("left")
                               Robotb.PhoenixSocketClient.send_robot_status(ch, robot)
                               robot = move(robot)
-                              Robotb.Actions.main("move")
+                              Process.sleep(1000)
+  Robotb.Actions.main("move")
                               Robotb.PhoenixSocketClient.send_robot_status(ch, robot)
                               [robot, "r"]
                             else
                               robot = move(robot)
-                              Robotb.Actions.main("move")
+                              Process.sleep(1000)
+  Robotb.Actions.main("move")
                               Robotb.PhoenixSocketClient.send_robot_status(ch, robot)
                               [robot, "l"]
                             end
@@ -283,22 +334,28 @@ defmodule Robotb do
     if robot.x == 2 do
       robot = reach_goal(robot, robot.x, :f, cli_proc_name, ch2, [:straight])
       robot = left(robot)
-      Robotb.Actions.main("left")
+      Process.sleep(1000)
+  Robotb.Actions.main("left")
       Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
-      Robotb.Actions.main("depositr")
+      Process.sleep(1000)
+  Robotb.Actions.main("depositr")
       robot
     else
     if 6 - rx < 6 - ry do
       robot = reach_goal(robot, 6, robot.y, cli_proc_name, ch2, [:straight])
       cond do 
-        robot.facing == :south -> Robotb.Actions.main("depositl")
+        robot.facing == :south -> Process.sleep(1000)
+  Robotb.Actions.main("depositl")
                                   robot
-        robot.facing == :north -> Robotb.Actions.main("depositr")
+        robot.facing == :north -> Process.sleep(1000)
+  Robotb.Actions.main("depositr")
                                   robot
         robot.facing == :east ->  robot = left(robot)
-                                  Robotb.Actions.main("left")
+                                  Process.sleep(1000)
+  Robotb.Actions.main("left")
                                   Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
-                                  Robotb.Actions.main("depositr")
+                                  Process.sleep(1000)
+  Robotb.Actions.main("depositr")
                                   robot
         true -> nil
       end
@@ -306,20 +363,26 @@ defmodule Robotb do
       robot = reach_goal(robot, robot.x, :f, cli_proc_name, ch2, [:straight])
       if robot.x == 1 && robot.facing == :north do
           robot = right(robot)
-          Robotb.Actions.main("right")
+          Process.sleep(1000)
+  Robotb.Actions.main("right")
           Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
-          Robotb.Actions.main("depositl")
+          Process.sleep(1000)
+  Robotb.Actions.main("depositl")
           robot
       else
         cond do 
-          robot.facing == :east -> Robotb.Actions.main("depositl")
+          robot.facing == :east -> Process.sleep(1000)
+  Robotb.Actions.main("depositl")
                                     robot
-          robot.facing == :west -> Robotb.Actions.main("depositr")
+          robot.facing == :west -> Process.sleep(1000)
+  Robotb.Actions.main("depositr")
                                     robot
           robot.facing == :north ->  robot = left(robot)
-                                    Robotb.Actions.main("left")
+                                    Process.sleep(1000)
+  Robotb.Actions.main("left")
                                     Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
-                                    Robotb.Actions.main("depositr")
+                                    Process.sleep(1000)
+  Robotb.Actions.main("depositr")
                                     robot
           true -> nil
         end
@@ -375,10 +438,12 @@ defmodule Robotb do
     robot = if (robot.x == 2 && robot.y == :c && robot.facing == :south) || (robot.x == 4 && robot.y == :c && robot.facing == :east) || (robot.x == 2 && robot.y == :b && robot.facing == :east) do
       Robotb.PhoenixSocketClient.send_for_eval(2, cli_proc_name, %{"x": robot.x, "y": robot.y, "face": robot.facing})
       robot = left(robot)
-      Robotb.Actions.main("left")
+      Process.sleep(1000)
+  Robotb.Actions.main("left")
       Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
       robot = move(robot)
-      Robotb.Actions.main("move")
+      Process.sleep(1000)
+  Robotb.Actions.main("move")
       Robotb.PhoenixSocketClient.send_robot_status(cli_proc_name, robot)
       robot
     else
@@ -389,18 +454,21 @@ defmodule Robotb do
         reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)
       (closer_to_goal(robot, {:x, gx}) || closer_to_goal(robot, {:y, gy})) && obs == false ->
         robot = move(robot)
-        Robotb.Actions.main("move")
+        Process.sleep(1000)
+  Robotb.Actions.main("move")
         face_list = [:straight]
         reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)
       Enum.member?(face_list, :right) ->
         if obs do
           robot = right(robot)
-          Robotb.Actions.main("right")
+          Process.sleep(1000)
+  Robotb.Actions.main("right")
           face_list = face_list ++ [:right]
           reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)
         else
           robot = move(robot)
-          Robotb.Actions.main("move")
+          Process.sleep(1000)
+  Robotb.Actions.main("move")
           face_list = [:straight]
           reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)
         end
@@ -408,34 +476,40 @@ defmodule Robotb do
       Enum.member?(face_list, :left) ->
         if obs do
           robot = left(robot)
-          Robotb.Actions.main("left")
+          Process.sleep(1000)
+  Robotb.Actions.main("left")
           face_list = face_list ++ [:left]
           reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)
         else
           robot = move(robot)
-          Robotb.Actions.main("move")
+          Process.sleep(1000)
+  Robotb.Actions.main("move")
           face_list = [:straight]
           reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)
         end
       closer_to_goal(right(robot), {:x, gx}) || closer_to_goal(right(robot), {:y, gy}) ->
         robot = right(robot)
-        Robotb.Actions.main("right")
+        Process.sleep(1000)
+  Robotb.Actions.main("right")
         face_list = face_list ++ [:right]
         reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)
       closer_to_goal(left(robot), {:x, gx}) || closer_to_goal(left(robot), {:y, gy}) ->
         robot = left(robot)
-        Robotb.Actions.main("left")
+        Process.sleep(1000)
+  Robotb.Actions.main("left")
         face_list = face_list ++ [:left]
         reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)
       true ->
         if move(left(robot)) == left(robot) do
           robot = right(robot)
-          Robotb.Actions.main("right")
+          Process.sleep(1000)
+  Robotb.Actions.main("right")
           face_list = face_list ++ [:right]
           reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)
         else
           robot = left(robot)
-          Robotb.Actions.main("left")
+          Process.sleep(1000)
+  Robotb.Actions.main("left")
           face_list = face_list ++ [:left]
           reach_goal(robot, gx, gy, cli_proc_name, ch2, face_list)
         end
