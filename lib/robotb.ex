@@ -65,21 +65,6 @@ defmodule Robotb do
   Call the respective functions from this module and others as needed.
   You may create extra helper functions as needed.
   """
-  def main do
-
-    ###########################
-    ## complete this funcion ##
-    ###########################
-    [ch, ch2] = Robotb.PhoenixSocketClient.connect_server()
-    goal_locs = Robotb.PhoenixSocketClient.get_goals(ch)
-    Agent.start_link(fn -> goal_locs end, name: :gl)
-    start_pos = Robotb.PhoenixSocketClient.get_start_pos(ch) 
-    {:ok, robot} = start(Enum.at(start_pos, 0) |> String.to_integer(), Enum.at(start_pos, 1) |> String.to_atom(), Enum.at(start_pos, 2) |> String.to_atom())
-    gl = Enum.map(goal_locs, fn g -> g["pos"] end)
-    stop(robot, gl, ch, ch2)
-
-
-  end
 
   @doc """
   Provide GOAL positions to the robot as given location of [(x1, y1),(x2, y2),..] and plan the path from START to these locations.
