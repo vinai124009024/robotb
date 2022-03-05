@@ -93,13 +93,6 @@ defmodule Robotb do
   #   end
 
   Process.sleep(1000)
-  Process.sleep(1000)
-  Robotb.Actions.main("move")
-
-  Process.sleep(1000)
-  Robotb.Actions.main("move")
-
-  Process.sleep(1000)
   Robotb.Actions.main("right")
 
   Process.sleep(1000)
