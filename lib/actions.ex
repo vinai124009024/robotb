@@ -37,7 +37,7 @@ defmodule Robotb.Actions do
 
  #@duty_cycles [150, 70, 0]
   @pwm_frequency 50
-  @pwm_value 100
+  @pwm_value 120
   @lim_val 800  
 
   # All the calls to the robot movements pass through main function

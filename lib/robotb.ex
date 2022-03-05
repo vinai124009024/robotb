@@ -93,6 +93,9 @@ defmodule Robotb do
   #   end
 
   Process.sleep(1000)
+  Robotb.Actions.main("move")
+
+  Process.sleep(1000)
   Robotb.Actions.main("right")
 
   Process.sleep(1000)
@@ -123,9 +126,6 @@ defmodule Robotb do
 
   Process.sleep(1000)
   Robotb.Actions.main("left")
-
-  Process.sleep(1000)
-  Robotb.Actions.main("move")
 
   Process.sleep(1000)
   Robotb.Actions.main("depositr")
@@ -161,10 +161,10 @@ defmodule Robotb do
   Robotb.Actions.main("left")
 
   Process.sleep(1000)
-  Robotb.Actions.main("depositr")
+  Robotb.Actions.main("move")
 
   Process.sleep(1000)
-  Robotb.Actions.main("move")
+  Robotb.Actions.main("depositr")
 
   Process.sleep(1000)
   Robotb.Actions.main("left")
