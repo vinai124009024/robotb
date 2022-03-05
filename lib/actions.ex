@@ -106,10 +106,10 @@ defmodule Robotb.Actions do
     
     if state == 0 do
      if side == "right" do
-      motor_action(motor_ref, @sright)
+      motor_action(motor_ref, @right)
       motion_pwm(@pwm_value)
      else
-      motor_action(motor_ref, @sleft)
+      motor_action(motor_ref, @left)
       motion_pwm(@pwm_value)
      end      
      Process.sleep(300)
@@ -119,10 +119,10 @@ defmodule Robotb.Actions do
      motor_action(motor_ref, @stop)
      else
       if side == "right" do
-        motor_action(motor_ref, @sright)
+        motor_action(motor_ref, @right)
         motion_pwm(@pwm_value)
       else
-        motor_action(motor_ref, @sleft)
+        motor_action(motor_ref, @left)
         motion_pwm(@pwm_value)
       end
       turn(motor_ref, sensor_ref, side, 1)
